@@ -1,10 +1,13 @@
 import telebot
 import time
 from telebot import types
+import re
 
 unt = 0
 
 bot = telebot.TeleBot("5996201646:AAGLoW74ThJiWDTR08AVLul0QJYvnMUd8UU")
+
+scores = {2145329973: 10}  # id: ball
 
 
 @bot.message_handler(commands=['login'])
@@ -15,19 +18,37 @@ def login(message):
     bot.send_message(message.chat.id, 'Для того чтобы войти отправти свой номер телефона ', reply_markup=keyboard)
 
 
+# @bot.message_handler(commands=['start'])
+# def start(message):
+#     # mess=f"Добрый день, {message.from_user.first_name} {message.from_user.last_name}. Мы рады приветствовать Вас на курсе по програмирование PYTHON CODE. Хотелось познакомить Вас с командами нашего бота "+"\n"+"Войти в учетную запись 🚪 - /login""\n"+"Зарегистрироватся для оплаты 💳 - /reg""\n"+" Главное меню 📱 - /menu"
+#     # bot.send_message(message.chat.id, mess)
+#     # markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+#     # Tem1 = types.KeyboardButton('Введение')
+#     # markup.add(Tem1)
+#     # bot.send_message(message.chat.id, "Добрый день. Для того, чтобы пройти тестирование выберити одну из тем.   ", reply_markup=markup)
+#     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+#     button_phone = types.KeyboardButton(text="Отправить телефон", request_contact=True)
+#     keyboard.add(button_phone)
+#     bot.send_message(message.chat.id, 'Для того чтобы войти отправти свой номер телефона ', reply_markup=keyboard)
+#     print(message.from_user.id)
+
+
 @bot.message_handler(commands=['start'])
 def start(message):
-    # mess=f"Добрый день, {message.from_user.first_name} {message.from_user.last_name}. Мы рады приветствовать Вас на курсе по програмирование PYTHON CODE. Хотелось познакомить Вас с командами нашего бота "+"\n"+"Войти в учетную запись 🚪 - /login""\n"+"Зарегистрироватся для оплаты 💳 - /reg""\n"+" Главное меню 📱 - /menu"
-    # bot.send_message(message.chat.id, mess)
-    # markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-    # Tem1 = types.KeyboardButton('Введение')
-    # markup.add(Tem1)
-    # bot.send_message(message.chat.id, "Добрый день. Для того, чтобы пройти тестирование выберити одну из тем.   ", reply_markup=markup)
-    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-    button_phone = types.KeyboardButton(text="Отправить телефон", request_contact=True)
-    keyboard.add(button_phone)
-    bot.send_message(message.chat.id, 'Для того чтобы войти отправти свой номер телефона ', reply_markup=keyboard)
+    print(message.from_user.id)
 
+    if message.from_user.id in phone.keys():
+        menu = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+        button1 = types.KeyboardButton('📚 Курс 📚')
+        button2 = types.KeyboardButton('📝 Тесты 📝')
+        button3 = types.KeyboardButton('🖊 Практические задания 🖊')
+        menu.add(button1, button2, button3)
+        bot.send_message(message.chat.id, "Вы попали в главное меню. (%i)" % scores[message.from_user.id], reply_markup=menu)
+    else:
+        keyboard = types.ReplyKeyboardRemove()
+        bot.send_message(message.chat.id,
+                         "Данный номер телефона не зарегистрирован за консультацией введите команду /reg",
+                         reply_markup=keyboard)
 
 # @bot.message_handler(commands=['menu'])
 # def menu(message):
@@ -48,7 +69,10 @@ def contact(message):
         print(type(message.contact))
         print('Name: ' + str(message.contact.first_name))
         print('Phone: ' + str(message.contact.phone_number))
-        if message.contact.phone_number == "79000521174" or message.contact.phone_number == "+79000521174":
+
+        # phone_number = re.sub("[^0-9]", "", message.contact.phone_number)
+
+        if message.from_user.id in phone.keys():
             # unt = 1
             # keyboard = types.ReplyKeyboardRemove()
             # bot.send_message(message.chat.id, "Вы успешно авторизовались на нашем сервисе!!! Теперь Вы можете использовать материаллы нашего курса, для этого введите команду /menu ", reply_markup=keyboard)
